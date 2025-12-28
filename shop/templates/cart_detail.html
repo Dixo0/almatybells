@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Корзина | AlmatyBells{% endblock %}
+
+{% block content %}
+<div class="cart-wrapper">
+    <h1 class="page-title">Ваша корзина</h1>
+
+    {% if cart %}
+        <div class="cart-grid">
+            <div class="cart-items">
+                {% for item in cart %}
+                    {% with product=item.product %}
+                        <div class="cart-item">
+                            <div class="item-img">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <div class="no-img">Нет фото</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="item-info">
+                                <h3>{{ product.name }}</h3>
+                                <p class="item-category">{{ product.category.name }}</p>
+                            </div>
+
+                            <div class="item-qty">
+                                <span class="label">Кол-во:</span>
+                                <span class="number">{{ item.quantity }}</span>
+                            </div>
+
+                            <div class="item-total">
+                                {{ item.total_price }} ₸
+                            </div>
+
+                            <div class="item-remove">
+                                <a href="{% url 'cart_remove' product.id %}" class="btn-remove">
+                                    Удалить
+                                </a>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <h3>Итого к оплате:</h3>
+                <div class="total-amount">{{ cart.get_total_price }} ₸</div>
+
+                <div class="cart-actions">
+                    <a href="{% url 'product_list' %}" class="btn-continue">
+                        ← Вернуться в каталог
+                    </a>
+                    <a href="{% url 'order_create' %}" class="btn-checkout">Оформить заказ</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <div class="empty-icon">🛒</div>
+            <h2>Ваша корзина пуста</h2>
+            <p>Вы еще не добавили ни одного новогоднего товара.</p>
+            <a href="{% url 'product_list' %}" class="btn-submit">Перейти к покупкам</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

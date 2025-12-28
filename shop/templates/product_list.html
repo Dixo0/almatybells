@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Каталог товаров{% endif %} | AlmatyBells
+{% endblock %}
+
+{% block content %}
+<div class="shop-container">
+    <aside class="sidebar">
+        <h3>Категории</h3>
+        <ul>
+            <li {% if not category %}class="active"{% endif %}>
+                <a href="{% url 'product_list' %}">Все товары</a>
+            </li>
+            {% for c in categories %}
+                <li {% if category.slug == c.slug %}class="active"{% endif %}>
+                    <a href="{% url 'product_list_by_category' c.slug %}">{{ c.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.image_url %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'img/no-image.png' %}" alt="Нет фото">
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h4>{{ product.name }}</h4>
+                    <p class="product-description">{{ product.description|truncatewords:10 }}</p> <!-- Описание (первые 10 слов) -->
+                    <p class="price">{{ product.price }} ₸</p>
+
+                    <form action="{% url 'cart_add' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-add">В корзину</button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-products">
+                <p>В этой категории пока нет товаров. Зайдите позже!</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

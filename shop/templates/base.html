@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AlmatyBells{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="main-header">
+        <nav class="container">
+            <a href="{% url 'product_list' %}" class="logo">AlmatyBells</a>
+            <div class="nav-links">
+                <a href="{% url 'cart_detail' %}" class="cart-link">
+                    🛒 Корзина
+                </a>
+
+                {% if user.is_authenticated %}
+                    <span class="user-name">Привет, {{ user.username }}!</span>
+                    <a href="{% url 'product_list' %}">Каталог</a>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-logout">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'product_list' %}">Каталог</a>
+                    <a href="{% url 'login' %}" class="btn-auth">Войти</a>
+                    <a href="{% url 'register' %}" class="btn-auth secondary">Регистрация</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-section">
+                <h4>AlmatyBells</h4>
+                <p>Ваш лучший гид в мире новогоднего волшебства в Алматы. С 2025 года создаем праздник в каждом доме.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Контакты</h4>
+                <ul>
+                    <li>📍 г. Алматы, пр. Абая 10, офис 25</li>
+                    <li>📞 <a href="tel:+77001234567">+7 (700) 123-45-67</a></li>
+                    <li>✉️ info@almatybells.kz</li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Мы на карте</h4>
+                <div class="footer-map">
+                    <iframe
+                        src="www.google.com"
+                        width="100%"
+                        height="150"
+                        style="border:0; border-radius: 8px;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AlmatyBells. Сделано с любовью в Казахстане</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

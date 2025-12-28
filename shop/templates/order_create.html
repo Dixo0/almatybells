@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="order-container">
+    <div class="order-form-side">
+        <h2>Доставка в Алматы 🚚</h2>
+        <form method="post" id="payment-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-submit">Оплатить заказ</button>
+        </form>
+    </div>
+
+    <div class="payment-card-side">
+      <div class="bank-card" id="card-visual">
+          <div class="chip"></div>
+          <div class="card-number" id="v-number">#### #### #### ####</div>
+          <div class="card-bottom">
+              <div class="card-holder">
+                  <label>Владелец</label>
+                  <div id="v-holder">ALMATY BELLS CUSTOMER</div>
+              </div>
+              <div class="card-date">
+                  <label>Срок</label>
+                  <div id="v-date">12/25</div>
+              </div>
+          </div>
+      </div>
+
+        <div class="fake-card-inputs">
+            <input type="text" placeholder="Номер карты" maxlength="19">
+            <div class="row">
+                <input type="text" placeholder="ММ/ГГ" maxlength="5">
+                <input type="text" placeholder="CVV" maxlength="3">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
