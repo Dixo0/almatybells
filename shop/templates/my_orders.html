@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="cart-wrapper">
+    <h1 class="page-title">📦 Мои заказы</h1>
+    
+    {% if orders %}
+    <div class="orders-grid">
+        {% for order in orders %}
+        <div class="order-card" style="
+            background: var(--card-glass);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <h3 style="color: var(--gold); margin-bottom: 0.5rem;">
+                        Заказ #{{ order.id }}
+                    </h3>
+                    <p style="opacity: 0.7; font-size: 0.9rem;">
+                        {{ order.created|date:"d.m.Y H:i" }}
+                    </p>
+                </div>
+                
+                <div style="text-align: right;">
+                    <div style="
+                        background: {% if order.paid %}#10b981{% else %}#f59e0b{% endif %};
+                        color: white;
+                        padding: 5px 12px;
+                        border-radius: 20px;
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                        display: inline-block;
+                    ">
+                        {% if order.paid %}✅ Оплачен{% else %}⏳ Ожидает оплаты{% endif %}
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 1.3rem; font-weight: 800; color: var(--pine);">
+                        {{ order.total_cost|default:0 }} ₸
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Товары в заказе -->
+            <div style="margin: 1rem 0; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                <h4 style="margin-bottom: 0.8rem; font-size: 1rem;">Состав заказа:</h4>
+                {% for item in order.items.all %}
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span style="color: var(--gold);">{{ item.price }} ₸</span>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Информация о доставке -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <div>
+                    <p style="opacity: 0.7; font-size: 0.85rem;">Клиент</p>
+                    <p style="font-weight: 600;">{{ order.first_name }} {{ order.last_name }}</p>
+                </div>
+                <div>
+                    <p style="opacity: 0.7; font-size: 0.85rem;">Адрес доставки</p>
+                    <p style="font-weight: 600;">{{ order.city }}, {{ order.address }}</p>
+                </div>
+            </div>
+            
+            <!-- Статус заказа (симуляция) -->
+            <div style="margin-top: 1.5rem;">
+                <p style="opacity: 0.7; font-size: 0.85rem; margin-bottom: 0.5rem;">Статус заказа:</p>
+                <div style="
+                    background: linear-gradient(90deg, 
+                        {% if order.paid %}
+                            #10b981 0%, 
+                            #10b981 {% widthratio order.id 10 100 %}%, 
+                            rgba(16, 185, 129, 0.2) {% widthratio order.id 10 100 %}%, 
+                            rgba(16, 185, 129, 0.2) 100%
+                        {% else %}
+                            #f59e0b 0%, 
+                            #f59e0b {% widthratio order.id 10 100 %}%, 
+                            rgba(245, 158, 11, 0.2) {% widthratio order.id 10 100 %}%, 
+                            rgba(245, 158, 11, 0.2) 100%
+                        {% endif %}
+                    );
+                    height: 8px;
+                    border-radius: 4px;
+                    margin-bottom: 0.5rem;
+                "></div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                    <span>📝 Оформлен</span>
+                    <span>💰 {% if order.paid %}Оплачен{% else %}Ожидает оплаты{% endif %}</span>
+                    <span>🚚 {% if order.id|divisibleby:3 %}В пути{% else %}Готовится{% endif %}</span>
+                    <span>📦 {% if order.id|divisibleby:5 %}Доставлен{% else %}В пути{% endif %}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <div class="empty-cart">
+        <div class="empty-icon">📦</div>
+        <h2>У вас пока нет заказов</h2>
+        <p>Сделайте свой первый заказ и он появится здесь!</p>
+        <a href="{% url 'product_list' %}" class="btn-submit" style="text-decoration: none; display: inline-block;">
+            Перейти к покупкам
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.order-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+</style>
+{% endblock %}

@@ -34,11 +34,14 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', shop_views.cart_add, name='cart_add'),
     path('cart/remove/<int:product_id>/', shop_views.cart_remove, name='cart_remove'),
     path('order/create/', shop_views.order_create, name='order_create'),
+    path('my-orders/', shop_views.my_orders, name='my_orders'),
     path('payment/done/<int:order_id>/', shop_views.payment_process, name='payment_process'),
 
     # Каталог
     path('', shop_views.product_list, name='product_list'),
     path('<slug:category_slug>/', shop_views.product_list, name='product_list_by_category'),
+
+
 ]
 
 if settings.DEBUG:

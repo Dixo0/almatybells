@@ -16,6 +16,7 @@
                 <a href="{% url 'cart_detail' %}" class="cart-link">
                     🛒 Корзина
                 </a>
+                <li><a href="{% url 'my_orders' %}">📦 Мои заказы</a></li>
 
                 {% if user.is_authenticated %}
                     <span class="user-name">Привет, {{ user.username }}!</span>

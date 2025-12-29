@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 from .models import Category, Product, Order, OrderItem
 from .forms import UserRegisterForm, OrderCreateForm
 from .cart import Cart
+
 
 def register(request):
     if request.method == 'POST':
@@ -73,3 +75,13 @@ def payment_process(request, order_id):
     order.paid = True
     order.save()
     return render(request, 'payment_done.html', {'order': order})
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created')
+
+    for order in orders:
+        order.total_cost = sum(item.price * item.quantity for item in order.items.all())
+
+    return render(request, 'my_orders.html', {'orders': orders})
